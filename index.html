@@ -1,887 +1,1212 @@
 <!DOCTYPE html>
-<html lang="es" class="scroll-smooth">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MOTOSTAR - Diagnóstico Inteligente & Telemetría en Tiempo Real</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            dark: '#0f172a',
-                            navy: '#111822',
-                            card: '#1e293b',
-                            lime: '#ccff00',
-                            limeHover: '#b5f500',
-                            lightBg: '#f8fafc',
-                            appGreen: '#eaf4d3',
-                            borderDark: '#1e293b'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
+    <title>MOTOSTAR - Diagnóstico y Telemetría de Motocicletas</title>
+    <!-- Google Fonts & FontAwesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-        
-        body {
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-light: #f8fafc;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --accent-lime: #a3e635;
+            --accent-lime-hover: #84cc16;
+            --accent-blue: #38bdf8;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --border-dark: #334155;
+            --border-light: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
             font-family: 'Inter', sans-serif;
-            background-color: #111822;
+        }
+
+        body {
+            background-color: var(--bg-dark);
             color: #ffffff;
             overflow-x: hidden;
         }
 
-        /* Custom scrollbar styling */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0f172a;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #334155;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #ccff00;
+        /* --- NAVBAR --- */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 5%;
+            background-color: rgba(15, 23, 42, 0.95);
+            border-bottom: 1px solid var(--border-dark);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(8px);
         }
 
-        .neon-glow {
-            box-shadow: 0 0 15px rgba(204, 255, 0, 0.3);
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: #ffffff;
         }
-        .neon-glow:hover {
-            box-shadow: 0 0 25px rgba(204, 255, 0, 0.6);
+
+        .logo i {
+            color: var(--accent-lime);
+            font-size: 1.75rem;
         }
-        .neon-border {
-            border: 1px solid rgba(204, 255, 0, 0.4);
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
         }
-        .neon-border:hover {
-            border-color: #ccff00;
+
+        .nav-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: #ffffff;
+        }
+
+        .btn-header {
+            border: 1px solid var(--accent-lime);
+            color: var(--accent-lime);
+            background: transparent;
+            padding: 0.6rem 1.25rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-header:hover {
+            background-color: var(--accent-lime);
+            color: var(--bg-dark);
+            box-shadow: 0 0 15px rgba(163, 230, 53, 0.4);
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            padding: 4rem 5%;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .hero-text span.badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: rgba(56, 189, 248, 0.1);
+            color: var(--accent-blue);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+        }
+
+        .hero-text span.badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-blue);
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-description {
+            color: #94a3b8;
+            font-size: 1.15rem;
+            line-height: 1.6;
+            margin-bottom: 2.5rem;
+            max-width: 500px;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-lime);
+            color: var(--bg-dark);
+            border: none;
+            padding: 0.9rem 1.8rem;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(163, 230, 53, 0.3);
+            background-color: var(--accent-lime-hover);
+        }
+
+        .btn-link {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .btn-link:hover {
+            color: var(--accent-blue);
+        }
+
+        /* --- DASHBOARD CARD HERO --- */
+        .dashboard-preview {
+            background-color: #ffffff;
+            color: var(--text-main);
+            border-radius: 20px;
+            padding: 1.75rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .dash-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .moto-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .moto-icon {
+            background-color: var(--bg-dark);
+            color: #ffffff;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .status-tag {
+            color: var(--success);
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.2); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .dash-stats {
+            display: grid;
+            grid-template-columns: auto 1fr 1fr 1fr;
+            gap: 1.5rem;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .health-ring {
+            position: relative;
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: conic-gradient(var(--accent-lime) 0% 92%, #e2e8f0 92% 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .health-ring-inner {
+            width: 72px;
+            height: 72px;
+            background: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .health-value {
+            font-size: 1.25rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .health-label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        .stat-item h4 {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-item p {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .dash-alert-box {
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .alert-details {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .alert-icon {
+            background-color: var(--danger);
+            color: #ffffff;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .alert-code {
+            color: var(--danger);
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        /* Canvas Telemetría */
+        .telemetry-container {
+            background-color: #0f172a;
+            border-radius: 12px;
+            padding: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        canvas#telemetryCanvas {
+            width: 100%;
+            height: 100px;
+            display: block;
+        }
+
+        /* --- DIAGNOSTIC INTERACTIVE SECTION --- */
+        .diag-section {
+            background-color: #ffffff;
+            color: var(--text-main);
+            padding: 4rem 5%;
+        }
+
+        .diag-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .diag-header {
+            margin-bottom: 2.5rem;
+        }
+
+        .subtitle {
+            color: #84cc16;
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            color: var(--text-main);
+        }
+
+        .diag-form-card {
+            background-color: var(--bg-light);
+            border: 2px solid var(--border-light);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            margin-bottom: 3rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--text-main);
+        }
+
+        .form-input, .form-textarea {
+            padding: 0.85rem 1rem;
+            border-radius: 10px;
+            border: 1px solid var(--border-light);
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            border-color: #84cc16;
+            box-shadow: 0 0 0 3px rgba(132, 204, 22, 0.2);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        .btn-analyze {
+            background-color: var(--bg-dark);
+            color: #ffffff;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-analyze:hover {
+            background-color: #1e293b;
+        }
+
+        /* Diagnostic Result Box */
+        .diag-result-box {
+            display: none;
+            background-color: #ffffff;
+            border: 2px solid var(--accent-lime);
+            border-radius: 16px;
+            padding: 1.75rem;
+            margin-top: 1.5rem;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .result-badge {
+            background-color: rgba(163, 230, 53, 0.2);
+            color: #4d7c0f;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        /* Feature Cards Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .feature-card {
+            background-color: var(--bg-light);
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 1.75rem;
+            transition: transform 0.2s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-50px);
+            border-color: #cbd5e1;
+        }
+
+        .feature-icon {
+            background-color: rgba(163, 230, 53, 0.3);
+            color: #4d7c0f;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.15rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* --- HISTORY AND MAINTENANCE SECTION --- */
+        .bottom-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .history-card {
+            background-color: var(--bg-light);
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .btn-filter {
+            border: 1px solid var(--border-light);
+            background: #ffffff;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.85rem 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .alert-item:last-child {
+            border-bottom: none;
+        }
+
+        .alert-item-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .dot-critical { width: 8px; height: 8px; border-radius: 50%; background-color: var(--danger); }
+        .dot-warning { width: 8px; height: 8px; border-radius: 50%; background-color: var(--warning); }
+        .dot-success { width: 8px; height: 8px; border-radius: 50%; background-color: var(--success); }
+
+        .status-pill {
+            padding: 0.25rem 0.6rem;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .pill-critical { background-color: #fef2f2; color: var(--danger); }
+        .pill-warning { background-color: #fffbe3; color: var(--warning); }
+        .pill-success { background-color: #ecfdf5; color: var(--success); }
+
+        .maint-card {
+            background-color: var(--bg-dark);
+            color: #ffffff;
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+
+        .maint-ring-box {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            margin: 1.5rem 0;
+        }
+
+        .maint-ring {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: conic-gradient(var(--accent-lime) 0% 70%, var(--border-dark) 70% 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .maint-ring-inner {
+            width: 54px;
+            height: 54px;
+            background: var(--bg-dark);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.85rem;
+        }
+
+        .maint-list {
+            list-style: none;
+            border-top: 1px solid var(--border-dark);
+            padding-top: 1rem;
+        }
+
+        .maint-list li {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-bottom: 0.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .maint-list li::before {
+            content: '';
+            width: 5px;
+            height: 5px;
+            background-color: var(--accent-blue);
+            border-radius: 50%;
+        }
+
+        /* --- MOBILE PROMO SECTION --- */
+        .mobile-section {
+            background-color: #ecfccb;
+            color: var(--text-main);
+            padding: 5rem 5%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .phone-mockup {
+            background-color: #0f172a;
+            border: 8px solid #334155;
+            border-radius: 36px;
+            padding: 1.25rem;
+            max-width: 300px;
+            margin: 0 auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            color: #ffffff;
+        }
+
+        .phone-screen {
+            background-color: #1e293b;
+            border-radius: 24px;
+            padding: 1.25rem;
+        }
+
+        .store-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn-store {
+            background-color: var(--bg-dark);
+            color: #ffffff;
+            border: none;
+            padding: 0.75rem 1.25rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            cursor: pointer;
+        }
+
+        /* --- FOOTER CTA --- */
+        .footer-cta {
+            background-color: var(--bg-dark);
+            padding: 4rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-dark);
+        }
+
+        footer {
+            background-color: var(--bg-dark);
+            padding: 2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(15, 23, 42, 0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            color: var(--text-main);
+            padding: 2rem;
+            border-radius: 20px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+        }
+
+        /* Responsivo */
+        @media (max-width: 992px) {
+            .hero, .bottom-grid, .mobile-section, .form-grid, .features-grid {
+                grid-template-columns: 1fr;
+            }
+            .nav-links { display: none; }
+            .hero-title { font-size: 2.5rem; }
         }
     </style>
 </head>
-<body class="antialiased selection:bg-lime-400 selection:text-black">
+<body>
 
-    <!-- HEADER / NAVIGATION BAR -->
-    <header class="sticky top-0 z-50 bg-[#111822]/90 backdrop-blur-md border-b border-slate-800/80 transition-all duration-300">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
-                <!-- Logo -->
-                <div class="flex items-center space-x-3 cursor-pointer" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-                    <div class="w-10 h-10 rounded-xl bg-brand-lime flex items-center justify-center text-slate-950 shadow-md shadow-brand-lime/20">
-                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                            <!-- Custom Motorcycle / Speed Icon -->
-                            <path d="M18.5 7A2.5 2.5 0 1 0 16 4.5 2.5 2.5 0 0 0 18.5 7zM5 13a4 4 0 1 0 4 4 4 4 0 0 0-4-4zm0 6a2 2 0 1 1 2-2 2 2 0 0 1-2 2zm14-6a4 4 0 1 0 4 4 4 4 0 0 0-4-4zm0 6a2 2 0 1 1 2-2 2 2 0 0 1-2 2zm-5.2-9h-3.6l-1.8 3h4.4l1-3zm-6.6 3l1.8-3H5v2h2.2l-2 1h2zm11.8 0a2 2 0 0 0-1.8-1.1h-1l-1 2h2.2z"/>
-                        </svg>
-                    </div>
-                    <span class="text-2xl font-black tracking-wider text-white">MOTOSTAR</span>
-                </div>
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fa-solid fa-motorcycle"></i> MOTOSTAR
+        </div>
+        <ul class="nav-links">
+            <li><a href="#plataforma">Plataforma</a></li>
+            <li><a href="#diagnostico">Diagnóstico</a></li>
+            <li><a href="#funciones">Funciones</a></li>
+            <li><a href="#app">App móvil</a></li>
+        </ul>
+        <button class="btn-header" onclick="openModal('Acceso al sistema', 'Ingresa tus credenciales para continuar al panel principal.')">ACCEDER AL SISTEMA</button>
+    </nav>
 
-                <!-- Desktop Nav Links -->
-                <nav class="hidden md:flex items-center space-x-8">
-                    <a href="#plataforma" class="text-slate-300 hover:text-brand-lime text-sm font-medium transition-colors">Plataforma</a>
-                    <a href="#funciones" class="text-slate-300 hover:text-brand-lime text-sm font-medium transition-colors">Funciones</a>
-                    <a href="#app-movil" class="text-slate-300 hover:text-brand-lime text-sm font-medium transition-colors">App móvil</a>
-                    <a href="#soporte" class="text-slate-300 hover:text-brand-lime text-sm font-medium transition-colors">Soporte</a>
-                </nav>
-
-                <!-- CTA Button -->
-                <div class="hidden sm:flex items-center">
-                    <button onclick="openSystemModal('login')" class="neon-border text-brand-lime hover:bg-brand-lime hover:text-slate-950 font-semibold px-5 py-2.5 rounded-lg text-xs tracking-wider uppercase transition-all duration-300">
-                        ACCEDER AL SISTEMA
-                    </button>
-                </div>
-
-                <!-- Mobile menu toggle -->
-                <div class="flex md:hidden">
-                    <button id="mobile-menu-btn" class="text-slate-300 hover:text-white focus:outline-none">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path id="menu-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                        </svg>
-                    </button>
+    <!-- HERO SECTION -->
+    <section class="hero" id="plataforma">
+        <div class="hero-text">
+            <span class="badge">Diagnóstico en Tiempo Real</span>
+            <h1 class="hero-title">Tu moto habla.<br>Motostar la escucha.</h1>
+            <p class="hero-description">
+                Diagnóstico inteligente, historial completo y alertas críticas en una sola plataforma web y móvil.
+            </p>
+            <div class="hero-cta">
+                <a href="#diagnostico" class="btn-primary">COMENZAR DIAGNÓSTICO <i class="fa-solid fa-arrow-right"></i></a>
+                <div class="btn-link" onclick="openModal('Demostración', 'Cargando video interactivo de prueba del sistema Motostar...')">
+                    <i class="fa-regular fa-circle-play"></i> Ver demo
                 </div>
             </div>
         </div>
 
-        <!-- Mobile Nav Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-[#0f172a] border-b border-slate-800 px-4 pt-2 pb-6 space-y-3">
-            <a href="#plataforma" class="block text-slate-300 hover:text-brand-lime py-2 text-base font-medium">Plataforma</a>
-            <a href="#funciones" class="block text-slate-300 hover:text-brand-lime py-2 text-base font-medium">Funciones</a>
-            <a href="#app-movil" class="block text-slate-300 hover:text-brand-lime py-2 text-base font-medium">App móvil</a>
-            <a href="#soporte" class="block text-slate-300 hover:text-brand-lime py-2 text-base font-medium">Soporte</a>
-            <button onclick="openSystemModal('login')" class="w-full mt-2 neon-border text-brand-lime hover:bg-brand-lime hover:text-slate-950 font-semibold py-3 rounded-lg text-xs uppercase tracking-wider">
-                ACCEDER AL SISTEMA
-            </button>
-        </div>
-    </header>
-
-    <!-- SECTION 1: HERO SECTION -->
-    <section id="plataforma" class="relative pt-12 pb-20 md:py-24 bg-[#111822] overflow-hidden">
-        <!-- Subtle Glow Elements -->
-        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-lime/5 rounded-full blur-3xl pointer-events-none"></div>
-
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-                
-                <!-- Hero Text Left -->
-                <div class="lg:col-span-5 space-y-6 text-center lg:text-left">
-                    <div class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full bg-slate-800/80 border border-slate-700/60 text-xs font-semibold uppercase tracking-wider text-slate-300">
-                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                        <span>DIAGNÓSTICO EN TIEMPO REAL</span>
-                    </div>
-
-                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-tight">
-                        Tu moto habla.<br>
-                        <span class="text-white">Motostar la</span><br>
-                        <span class="text-brand-lime">escucha.</span>
-                    </h1>
-
-                    <p class="text-slate-400 text-base sm:text-lg leading-relaxed max-w-xl mx-auto lg:mx-0">
-                        Diagnóstico inteligente, historial completo y alertas críticas en una sola plataforma web y móvil.
-                    </p>
-
-                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
-                        <button onclick="triggerDiagnosticSimulation()" class="w-full sm:w-auto bg-brand-lime text-slate-950 font-black px-7 py-4 rounded-full text-xs uppercase tracking-wider hover:bg-brand-limeHover neon-glow transition-all duration-300">
-                            COMENZAR DIAGNÓSTICO
-                        </button>
-                        <button id="toggle-demo-btn" onclick="toggleDemoMode()" class="w-full sm:w-auto flex items-center justify-center space-x-2 text-white hover:text-brand-lime px-6 py-4 rounded-full text-sm font-semibold transition-colors group">
-                            <span class="w-8 h-8 rounded-full bg-slate-800 group-hover:bg-brand-lime/20 flex items-center justify-center transition-colors">
-                                <svg class="w-4 h-4 text-white group-hover:text-brand-lime fill-current" viewBox="0 0 24 24">
-                                    <path d="M8 5v14l11-7z"/>
-                                </svg>
-                            </span>
-                            <span id="demo-btn-text">Ver demo activa</span>
-                        </button>
+        <!-- DASHBOARD PREVIEW CARD -->
+        <div class="dashboard-preview">
+            <div class="dash-header">
+                <div class="moto-info">
+                    <div class="moto-icon"><i class="fa-solid fa-motorcycle"></i></div>
+                    <div>
+                        <strong style="display:block; font-size: 0.95rem;" id="dashMotoTitle">Yamaha MT-07 / AKT NKD 125</strong>
+                        <span style="font-size: 0.75rem; color: var(--text-muted);">Conectada ahora</span>
                     </div>
                 </div>
+                <div class="status-tag">
+                    <div class="status-dot"></div> EN LÍNEA
+                </div>
+            </div>
 
-                <!-- Hero Live Telemetry Dashboard Card Right -->
-                <div class="lg:col-span-7">
-                    <div class="bg-white rounded-3xl p-6 sm:p-8 text-slate-900 shadow-2xl relative border border-slate-100 transition-all duration-500">
-                        
-                        <!-- Bike Header -->
-                        <div class="flex flex-wrap items-center justify-between border-b border-slate-100 pb-5 gap-3">
-                            <div class="flex items-center space-x-3">
-                                <div class="w-10 h-10 rounded-xl bg-slate-950 text-brand-lime flex items-center justify-center font-bold text-lg">
-                                    ✕
-                                </div>
-                                <div>
-                                    <h3 class="font-black text-lg text-slate-900 tracking-tight leading-none">Yamaha MT-07</h3>
-                                    <p class="text-xs text-slate-400 font-medium mt-1">JYARM041 · Conectada ahora</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center space-x-2 bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold">
-                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-                                <span class="uppercase tracking-wider">EN LÍNEA</span>
-                            </div>
-                        </div>
-
-                        <!-- Main Telemetry Grid -->
-                        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center my-6">
-                            
-                            <!-- Circular Gauge (92% Health) -->
-                            <div class="md:col-span-5 flex flex-col items-center justify-center">
-                                <div class="relative w-36 h-36 flex items-center justify-center">
-                                    <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                                        <!-- Background Circle -->
-                                        <circle cx="50" cy="50" r="42" stroke="#e2e8f0" stroke-width="10" fill="transparent" />
-                                        <!-- Animated Health Progress Ring -->
-                                        <circle id="health-ring" cx="50" cy="50" r="42" stroke="#ccff00" stroke-width="10" 
-                                                stroke-linecap="round" fill="transparent"
-                                                stroke-dasharray="263.89" stroke-dashoffset="21.11"
-                                                class="transition-all duration-1000 ease-out" />
-                                    </svg>
-                                    <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
-                                        <span id="health-percentage" class="text-3xl font-black text-slate-900 leading-none">92%</span>
-                                        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-1">SALUD</span>
-                                    </div>
-                                </div>
-                                <p class="text-sm font-semibold text-slate-700 mt-3">Estado general óptimo</p>
-                            </div>
-
-                            <!-- Stat Columns -->
-                            <div class="md:col-span-7 grid grid-cols-3 gap-2 sm:gap-4 text-center border-t md:border-t-0 md:border-l border-slate-100 pt-4 md:pt-0 md:pl-6">
-                                <div>
-                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">BATERÍA</span>
-                                    <span id="stat-battery" class="text-xl sm:text-2xl font-black text-emerald-500 mt-1 block">12.8 V</span>
-                                </div>
-                                <div>
-                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">MOTOR</span>
-                                    <span id="stat-engine" class="text-xl sm:text-2xl font-black text-slate-800 mt-1 block">87 °C</span>
-                                </div>
-                                <div>
-                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">RECORRIDO</span>
-                                    <span id="stat-odometer" class="text-xl sm:text-2xl font-black text-slate-800 mt-1 block">18,420 km</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Active Critical Warning Banner -->
-                        <div id="active-alert-box" class="bg-red-50 border border-red-100 rounded-2xl p-4 flex items-center justify-between mb-6 transition-all duration-300">
-                            <div class="flex items-center space-x-3">
-                                <div class="w-8 h-8 rounded-full bg-red-500 text-white flex items-center justify-center shrink-0">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h4 class="text-xs font-bold text-slate-900">Presión de aceite irregular</h4>
-                                    <p class="text-[11px] text-slate-500">Detectada hace 4 min · Revisión recomendada</p>
-                                </div>
-                            </div>
-                            <span class="text-xs font-bold text-red-600 bg-red-100/80 px-2 py-1 rounded">P0521</span>
-                        </div>
-
-                        <!-- Realtime Telemetry Oscilloscope Canvas -->
-                        <div class="relative bg-slate-900 rounded-2xl p-3 overflow-hidden shadow-inner">
-                            <div class="flex items-center justify-between text-[10px] font-mono text-slate-400 mb-1 px-2">
-                                <span class="flex items-center space-x-1">
-                                    <span class="w-2 h-2 rounded-full bg-brand-lime inline-block"></span>
-                                    <span>SENSORES TELEMETRÍA OKD-3</span>
-                                </span>
-                                <span id="waveform-status" class="text-brand-lime">TRANSMITIENDO 60Hz</span>
-                            </div>
-                            <canvas id="telemetryCanvas" class="w-full h-24 rounded-lg block"></canvas>
-                        </div>
-
+            <div class="dash-stats">
+                <div class="health-ring">
+                    <div class="health-ring-inner">
+                        <span class="health-value">92%</span>
+                        <span class="health-label">SALUD</span>
                     </div>
                 </div>
+                <div class="stat-item">
+                    <h4>Batería</h4>
+                    <p style="color: var(--success);" id="valBateria">12.8 V</p>
+                </div>
+                <div class="stat-item">
+                    <h4>Motor</h4>
+                    <p id="valTemp">87 °C</p>
+                </div>
+                <div class="stat-item">
+                    <h4>Recorrido</h4>
+                    <p id="valKm">18,420 km</p>
+                </div>
+            </div>
 
+            <div class="dash-alert-box">
+                <div class="alert-details">
+                    <div class="alert-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    <div>
+                        <strong style="display:block; font-size: 0.85rem;" id="liveAlertTitle">Presión de aceite irregular</strong>
+                        <span style="font-size: 0.75rem; color: var(--text-muted);" id="liveAlertSub">Detectada hace 4 min - Revisión recomendada</span>
+                    </div>
+                </div>
+                <span class="alert-code" id="liveAlertCode">P0521</span>
+            </div>
+
+            <!-- Canvas de Telemetría Real-time -->
+            <div class="telemetry-container">
+                <canvas id="telemetryCanvas"></canvas>
             </div>
         </div>
     </section>
 
-    <!-- SECTION 2: VALUE PROPOSITION & FEATURES -->
-    <section id="funciones" class="py-20 bg-slate-50 text-slate-900">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            
-            <!-- Section Header -->
-            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
-                <div>
-                    <span class="text-xs font-bold text-brand-lime bg-slate-900 px-3 py-1 rounded-full uppercase tracking-wider inline-block mb-3">
-                        CONTROL TOTAL, SIN CONJETURAS
-                    </span>
-                    <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight max-w-xl">
-                        De la alerta a la solución, todo queda conectado.
-                    </h2>
-                </div>
-                <p class="text-slate-500 text-sm max-w-sm mt-4 md:mt-0 font-medium">
-                    Motostar convierte señales complejas en decisiones claras para motociclistas, flotas y talleres.
-                </p>
+    <!-- INTERACTIVE DIAGNOSTIC SECTION -->
+    <section class="diag-section" id="diagnostico">
+        <div class="diag-container">
+            <div class="diag-header">
+                <span class="subtitle">CONTROL TOTAL, SIN CONJETURAS</span>
+                <h2 class="section-title">De la alerta a la solución,<br>todo queda conectado.</h2>
             </div>
 
-            <!-- 3 Top Feature Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-                <!-- Card 1 -->
-                <div class="bg-white p-7 rounded-2xl shadow-sm border border-slate-200/80 hover:shadow-md transition-shadow">
-                    <div class="w-12 h-12 rounded-xl bg-lime-100 flex items-center justify-center text-slate-900 mb-5">
-                        <svg class="w-6 h-6 text-slate-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-                        </svg>
+            <!-- FORMULARIO DE DIAGNÓSTICO INTERACTIVO -->
+            <div class="diag-form-card">
+                <h3 style="margin-bottom: 1rem; font-size: 1.25rem;"><i class="fa-solid fa-stethoscope" style="color: #84cc16;"></i> Asistente de Diagnóstico Rápido</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="motoModel">Marca y Modelo de la Moto:</label>
+                        <input type="text" id="motoModel" class="form-input" placeholder="Ej: AKT NKD 125, Pulsar NS 200, Yamaha MT-07...">
                     </div>
-                    <h3 class="text-lg font-bold text-slate-900 mb-2">Diagnóstico preciso</h3>
-                    <p class="text-slate-500 text-sm leading-relaxed">
-                        Interpreta códigos OBD y telemetría para detectar fallas antes de que escalen.
-                    </p>
-                </div>
-
-                <!-- Card 2 -->
-                <div class="bg-white p-7 rounded-2xl shadow-sm border border-slate-200/80 hover:shadow-md transition-shadow">
-                    <div class="w-12 h-12 rounded-xl bg-lime-100 flex items-center justify-center text-slate-900 mb-5">
-                        <svg class="w-6 h-6 text-slate-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-bold text-slate-900 mb-2">Historial verificable</h3>
-                    <p class="text-slate-500 text-sm leading-relaxed">
-                        Cada servicio, recorrido y lectura queda registrado en una línea de tiempo.
-                    </p>
-                </div>
-
-                <!-- Card 3 -->
-                <div class="bg-white p-7 rounded-2xl shadow-sm border border-slate-200/80 hover:shadow-md transition-shadow">
-                    <div class="w-12 h-12 rounded-xl bg-lime-100 flex items-center justify-center text-slate-900 mb-5">
-                        <svg class="w-6 h-6 text-slate-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-bold text-slate-900 mb-2">Alertas que llegan a tiempo</h3>
-                    <p class="text-slate-500 text-sm leading-relaxed">
-                        Prioriza incidencias y notifica al propietario o al taller desde cualquier lugar.
-                    </p>
-                </div>
-            </div>
-
-            <!-- Interactive Maintenance Hub & History Section -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                
-                <!-- Left: Alert History -->
-                <div class="lg:col-span-7 bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm">
-                    <div class="flex items-center justify-between mb-6">
-                        <div>
-                            <h3 class="text-lg font-bold text-slate-900">Historial de alertas</h3>
-                            <p class="text-xs text-slate-400">Últimos eventos de la Yamaha MT-07</p>
-                        </div>
-                        <button id="filter-todas-btn" onclick="toggleAlertFilter()" class="border border-slate-200 hover:border-slate-400 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider transition-colors">
-                            <span id="alert-filter-label">TODAS</span>
-                        </button>
-                    </div>
-
-                    <!-- Alerts List Container -->
-                    <div id="alert-history-container" class="space-y-4">
-                        <!-- Alert 1 -->
-                        <div class="alert-item p-3.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between transition-all">
-                            <div class="flex items-center space-x-3">
-                                <span class="w-2 h-2 rounded-full bg-red-500 shrink-0"></span>
-                                <span class="text-xs font-bold text-slate-400 w-12">10:42</span>
-                                <div>
-                                    <p class="text-xs font-bold text-slate-900">Presión de aceite irregular</p>
-                                    <p class="text-[11px] text-slate-400 font-mono">P0521</p>
-                                </div>
-                            </div>
-                            <span class="text-[11px] font-bold text-red-600 bg-red-100/80 px-2.5 py-1 rounded-full">Crítica</span>
-                        </div>
-
-                        <!-- Alert 2 -->
-                        <div class="alert-item p-3.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between transition-all">
-                            <div class="flex items-center space-x-3">
-                                <span class="w-2 h-2 rounded-full bg-amber-500 shrink-0"></span>
-                                <span class="text-xs font-bold text-slate-400 w-12">09:18</span>
-                                <div>
-                                    <p class="text-xs font-bold text-slate-900">Voltaje de batería bajo</p>
-                                    <p class="text-[11px] text-slate-400 font-mono">P0562</p>
-                                </div>
-                            </div>
-                            <span class="text-[11px] font-bold text-amber-700 bg-amber-100/80 px-2.5 py-1 rounded-full">Atención</span>
-                        </div>
-
-                        <!-- Alert 3 -->
-                        <div class="alert-item p-3.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between transition-all">
-                            <div class="flex items-center space-x-3">
-                                <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
-                                <span class="text-xs font-bold text-slate-400 w-12">Ayer</span>
-                                <div>
-                                    <p class="text-xs font-bold text-slate-900">Temperatura estabilizada</p>
-                                    <p class="text-[11px] text-slate-400 font-mono">SYS-04</p>
-                                </div>
-                            </div>
-                            <span class="text-[11px] font-bold text-emerald-700 bg-emerald-100/80 px-2.5 py-1 rounded-full">Resuelta</span>
-                        </div>
-                    </div>
-
-                    <button onclick="addDiagnosticSampleAlert()" class="w-full mt-5 py-2.5 border border-dashed border-slate-300 hover:border-slate-400 text-xs font-bold text-slate-600 rounded-xl transition-colors flex items-center justify-center space-x-1">
-                        <span>+ Simular nuevo evento de sensores</span>
-                    </button>
-                </div>
-
-                <!-- Right: Upcoming Maintenance Card (Dark Container) -->
-                <div class="lg:col-span-5 bg-slate-950 text-white p-6 sm:p-8 rounded-3xl shadow-xl">
-                    <h3 class="text-lg font-bold mb-6">Próximo mantenimiento</h3>
-
-                    <!-- Gauge Badge -->
-                    <div class="flex items-center space-x-4 bg-slate-900/80 p-4 rounded-2xl border border-slate-800 mb-6">
-                        <div class="relative w-16 h-16 flex items-center justify-center shrink-0">
-                            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-                                <path class="text-slate-800" stroke-width="3.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                                <path class="text-brand-lime" stroke-dasharray="80, 100" stroke-width="3.5" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                            </svg>
-                            <span class="absolute text-xs font-black text-white">1,580</span>
-                        </div>
-                        <div>
-                            <span class="text-[10px] font-black uppercase text-brand-lime tracking-wider block">KM RESTANTES</span>
-                            <h4 class="text-sm font-bold text-white">Cambio de aceite + filtro</h4>
-                        </div>
-                    </div>
-
-                    <!-- Scheduled Upcoming List -->
-                    <div class="space-y-3 pt-2 border-t border-slate-800/80 text-xs">
-                        <div class="flex items-center space-x-3 text-slate-300 py-1.5">
-                            <span class="w-1.5 h-1.5 rounded-full bg-brand-lime"></span>
-                            <span class="font-medium">12 Jun 2026 - Revisión de frenos</span>
-                        </div>
-                        <div class="flex items-center space-x-3 text-slate-300 py-1.5">
-                            <span class="w-1.5 h-1.5 rounded-full bg-brand-lime"></span>
-                            <span class="font-medium">04 Mar 2026 - Cambio de neumáticos</span>
-                        </div>
-                        <div class="flex items-center space-x-3 text-slate-300 py-1.5">
-                            <span class="w-1.5 h-1.5 rounded-full bg-brand-lime"></span>
-                            <span class="font-medium">18 Dic 2025 - Servicio general</span>
-                        </div>
+                    <div class="form-group">
+                        <label for="symptomDesc">Describe la falla o síntoma:</label>
+                        <textarea id="symptomDesc" class="form-textarea" placeholder="Ej: Me cuesta encender en frío, tiembla mucho al acelerar, humo blanco en el escape, ruido en los frenos..."></textarea>
                     </div>
                 </div>
-
-            </div>
-
-        </div>
-    </section>
-
-    <!-- SECTION 3: APP MOBILE SHOWCASE -->
-    <section id="app-movil" class="py-20 bg-[#eaf4d3] text-slate-900">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                
-                <!-- Mobile Smartphone UI Container (Left) -->
-                <div class="lg:col-span-5 flex justify-center">
-                    <div class="relative w-full max-w-[310px] bg-slate-950 rounded-[45px] p-4 shadow-2xl border-4 border-slate-900 ring-1 ring-slate-800/10">
-                        <!-- Phone Notch / Camera Top Bar -->
-                        <div class="w-32 h-5 bg-slate-950 rounded-b-2xl mx-auto absolute top-0 left-1/2 -translate-x-1/2 z-20 flex items-center justify-center">
-                            <div class="w-12 h-1 bg-slate-800 rounded-full"></div>
-                        </div>
-
-                        <!-- Phone Screen Content -->
-                        <div class="bg-white rounded-[35px] pt-8 pb-6 px-4 text-slate-900 space-y-4 overflow-hidden relative">
-                            
-                            <!-- App Header -->
-                            <div class="flex items-center justify-between">
-                                <span class="font-black text-slate-900 tracking-wider text-sm">MOTOSTAR</span>
-                                <div class="w-7 h-7 rounded-full bg-slate-200 overflow-hidden border border-slate-300">
-                                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="Avatar" class="w-full h-full object-cover">
-                                </div>
-                            </div>
-
-                            <!-- Bike Preview Canvas Card -->
-                            <div class="bg-slate-100 rounded-2xl p-3 flex flex-col items-center justify-center relative overflow-hidden">
-                                <div class="w-full h-28 relative flex items-center justify-center">
-                                    <svg class="w-full h-full text-slate-800" viewBox="0 0 200 100" fill="none">
-                                        <!-- Styled SVG Motorcycle Graphic -->
-                                        <circle cx="50" cy="65" r="22" stroke="currentColor" stroke-width="6"/>
-                                        <circle cx="150" cy="65" r="22" stroke="currentColor" stroke-width="6"/>
-                                        <path d="M50 65 L90 40 L120 40 L150 65 M90 40 L70 25 L110 25 L135 45" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
-                                        <path d="M100 40 L115 65" stroke="currentColor" stroke-width="4"/>
-                                        <circle cx="110" cy="25" r="4" fill="#ccff00"/>
-                                    </svg>
-                                </div>
-                            </div>
-
-                            <!-- Overall Health Card -->
-                            <div class="bg-slate-950 text-white rounded-2xl p-3.5 flex items-center justify-between shadow-lg">
-                                <div>
-                                    <span class="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">ESTADO GENERAL</span>
-                                    <span class="text-xs font-bold text-white">Todo en orden</span>
-                                </div>
-                                <span class="text-lg font-black text-brand-lime">92%</span>
-                            </div>
-
-                            <!-- Recent Activity Timeline -->
-                            <div class="space-y-2 pt-1">
-                                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Actividad reciente</span>
-                                
-                                <div class="bg-slate-50 p-2.5 rounded-xl flex items-center justify-between text-xs border border-slate-100">
-                                    <div class="flex items-center space-x-2">
-                                        <span class="w-4 h-4 rounded-full bg-lime-200 text-slate-900 flex items-center justify-center text-[10px] font-bold">✓</span>
-                                        <span class="font-medium text-slate-800">Diagnóstico completado</span>
-                                    </div>
-                                    <span class="text-[10px] text-slate-400">Ahora</span>
-                                </div>
-
-                                <div class="bg-slate-50 p-2.5 rounded-xl flex items-center justify-between text-xs border border-slate-100">
-                                    <div class="flex items-center space-x-2">
-                                        <span class="w-4 h-4 rounded-full bg-lime-200 text-slate-900 flex items-center justify-center text-[10px] font-bold">✓</span>
-                                        <span class="font-medium text-slate-800">Ruta registrada</span>
-                                    </div>
-                                    <span class="text-[10px] text-slate-400">Ayer</span>
-                                </div>
-
-                                <div class="bg-slate-50 p-2.5 rounded-xl flex items-center justify-between text-xs border border-slate-100">
-                                    <div class="flex items-center space-x-2">
-                                        <span class="w-4 h-4 rounded-full bg-lime-200 text-slate-900 flex items-center justify-center text-[10px] font-bold">✓</span>
-                                        <span class="font-medium text-slate-800">Mantenimiento añadido</span>
-                                    </div>
-                                    <span class="text-[10px] text-slate-400">Ayer</span>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
-                <!-- App Features Right Column -->
-                <div class="lg:col-span-7 space-y-6">
-                    <span class="text-xs font-extrabold text-slate-900 uppercase tracking-widest block">
-                        MOTOSTAR EN TU BOLSILLO
-                    </span>
-
-                    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-950 tracking-tight leading-tight">
-                        La tranquilidad viaja contigo.
-                    </h2>
-
-                    <p class="text-slate-700 text-base leading-relaxed">
-                        Recibe alertas al instante, consulta el historial y comparte diagnósticos con tu taller desde la app.
-                    </p>
-
-                    <!-- Feature Checkmarks -->
-                    <div class="space-y-3.5 pt-2">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-6 h-6 rounded-full bg-slate-950 text-brand-lime flex items-center justify-center shrink-0">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
-                                </svg>
-                            </div>
-                            <span class="text-sm font-bold text-slate-900">Notificaciones críticas en tiempo real</span>
-                        </div>
-
-                        <div class="flex items-center space-x-3">
-                            <div class="w-6 h-6 rounded-full bg-slate-950 text-brand-lime flex items-center justify-center shrink-0">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
-                                </svg>
-                            </div>
-                            <span class="text-sm font-bold text-slate-900">Historial sincronizado entre web y móvil</span>
-                        </div>
-
-                        <div class="flex items-center space-x-3">
-                            <div class="w-6 h-6 rounded-full bg-slate-950 text-brand-lime flex items-center justify-center shrink-0">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
-                                </svg>
-                            </div>
-                            <span class="text-sm font-bold text-slate-900">Reportes listos para compartir</span>
-                        </div>
-                    </div>
-
-                    <!-- Store Download Buttons -->
-                    <div class="flex flex-wrap gap-4 pt-4">
-                        <button onclick="triggerAppToast('iOS App Store')" class="bg-slate-950 hover:bg-slate-800 text-white px-5 py-3 rounded-xl flex items-center space-x-3 transition-colors shadow-md">
-                            <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
-                                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.32c.62-.75 1.04-1.8 0.93-2.85-.9.04-2 .6-2.65 1.35-.58.67-1.09 1.75-.95 2.78 1.01.08 2.05-.53 2.67-1.28z"/>
-                            </svg>
-                            <div class="text-left">
-                                <div class="text-[9px] uppercase tracking-wider text-slate-400 font-semibold">Descargar en</div>
-                                <div class="text-xs font-bold">App Store</div>
-                            </div>
-                        </button>
-
-                        <button onclick="triggerAppToast('Google Play Store')" class="bg-slate-950 hover:bg-slate-800 text-white px-5 py-3 rounded-xl flex items-center space-x-3 transition-colors shadow-md">
-                            <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
-                                <path d="M3 20.5v-17c0-.55.45-1 1-1h12c.55 0 1 .45 1 1v17c0 .55-.45 1-1 1H4c-.55 0-1-.45-1-1zm3-15v13h8v-13H6z"/>
-                            </svg>
-                            <div class="text-left">
-                                <div class="text-[9px] uppercase tracking-wider text-slate-400 font-semibold">Disponible en</div>
-                                <div class="text-xs font-bold">Google Play</div>
-                            </div>
-                        </button>
-                    </div>
-
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- SECTION 4: FOOTER & BANNER CTA -->
-    <footer id="soporte" class="bg-[#111822] text-white pt-16 pb-12 border-t border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
-            
-            <!-- CTA Banner Box -->
-            <div class="flex flex-col md:flex-row items-center justify-between gap-6 pb-12 border-b border-slate-800/80">
-                <div>
-                    <h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
-                        Conoce tu moto. Anticípate al problema.
-                    </h2>
-                    <p class="text-slate-400 text-sm mt-1">
-                        Conecta tu primera motocicleta y obtén un diagnóstico inicial.
-                    </p>
-                </div>
-                <button onclick="openSystemModal('register')" class="bg-brand-lime hover:bg-brand-limeHover text-slate-950 font-black px-7 py-3.5 rounded-full text-xs tracking-wider uppercase transition-all duration-300 neon-glow shrink-0">
-                    CREAR CUENTA GRATIS
+                <button class="btn-analyze" onclick="analizarSintoma()">
+                    <i class="fa-solid fa-magnifying-glass"></i> ANALIZAR Y GENERAR SOLUCIÓN
                 </button>
-            </div>
 
-            <!-- Bottom Branding & Copyright Links -->
-            <div class="flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
-                <div class="flex items-center space-x-3">
-                    <div class="w-6 h-6 rounded-lg bg-brand-lime flex items-center justify-center text-slate-950 font-black text-xs">
-                        ✕
+                <!-- RESULTADO DEL DIAGNÓSTICO -->
+                <div class="diag-result-box" id="diagResultBox">
+                    <div class="result-header">
+                        <div>
+                            <strong id="resMotoName" style="font-size: 1.1rem;">Yamaha MT-07</strong>
+                            <span style="display:block; font-size: 0.8rem; color: var(--text-muted);" id="resTimestamp">Diagnóstico generado justo ahora</span>
+                        </div>
+                        <span class="result-badge" id="resUrgencia">Urgencia: Media</span>
                     </div>
-                    <span class="font-black text-white text-sm tracking-wider">MOTOSTAR</span>
-                </div>
-
-                <div class="flex items-center space-x-6">
-                    <span>© 2026 Motostar</span>
-                    <a href="#soporte" onclick="alert('Políticas de privacidad de Motostar actualizadas a 2026.')" class="hover:text-slate-300 transition-colors">Privacidad</a>
-                    <a href="#soporte" onclick="alert('Términos de servicio de la plataforma de telemetría Motostar.')" class="hover:text-slate-300 transition-colors">Términos</a>
-                    <a href="#soporte" onclick="alert('Centro de ayuda y soporte técnico 24/7 de Motostar.')" class="hover:text-slate-300 transition-colors">Ayuda</a>
+                    <h4 style="color: var(--text-main); margin-bottom: 0.5rem;" id="resDiagnosticoTitle">Falla Posible Detectada</h4>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem;" id="resDiagnosticoBody">
+                        --
+                    </p>
+                    <div style="background-color: #f8fafc; padding: 1rem; border-radius: 10px; border-left: 4px solid #84cc16;">
+                        <strong>Solución recomendada:</strong>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;" id="resSolucion">
+                            --
+                        </p>
+                    </div>
                 </div>
             </div>
 
+            <!-- TRES TARJETAS INFORMATIVAS -->
+            <div class="features-grid" id="funciones">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+                    <h3>Diagnóstico preciso</h3>
+                    <p>Interpreta códigos OBD y telemetría para detectar fallas antes de que escalen o causen daños graves al motor.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                    <h3>Historial verificable</h3>
+                    <p>Cada servicio, recorrido, cambio de aceite y lectura de sensores queda registrado automáticamente en una línea de tiempo.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fa-solid fa-bell"></i></div>
+                    <h3>Alertas a tiempo</h3>
+                    <p>Prioriza incidencias críticas y notifica al propietario o al taller en tiempo real desde cualquier lugar.</p>
+                </div>
+            </div>
+
+            <!-- HISTORIAL DE ALERTAS Y PRÓXIMO MANTENIMIENTO -->
+            <div class="bottom-grid">
+                <div class="history-card">
+                    <div class="history-header">
+                        <div>
+                            <h3>Historial de alertas</h3>
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">Últimos eventos de la motocicleta</span>
+                        </div>
+                        <button class="btn-filter" id="btnFilter" onclick="toggleFiltroAlertas()">TODAS</button>
+                    </div>
+
+                    <div id="alertsContainer">
+                        <div class="alert-item" data-type="critical">
+                            <div class="alert-item-info">
+                                <div class="dot-critical"></div>
+                                <div>
+                                    <strong style="font-size: 0.9rem; display:block;">Presión de aceite irregular</strong>
+                                    <span style="font-size: 0.75rem; color: var(--text-muted);">P0521 • 10:42 AM</span>
+                                </div>
+                            </div>
+                            <span class="status-pill pill-critical">Crítica</span>
+                        </div>
+
+                        <div class="alert-item" data-type="warning">
+                            <div class="alert-item-info">
+                                <div class="dot-warning"></div>
+                                <div>
+                                    <strong style="font-size: 0.9rem; display:block;">Voltaje de batería bajo</strong>
+                                    <span style="font-size: 0.75rem; color: var(--text-muted);">P0562 • 09:18 AM</span>
+                                </div>
+                            </div>
+                            <span class="status-pill pill-warning">Atención</span>
+                        </div>
+
+                        <div class="alert-item" data-type="success">
+                            <div class="alert-item-info">
+                                <div class="dot-success"></div>
+                                <div>
+                                    <strong style="font-size: 0.9rem; display:block;">Temperatura estabilizada</strong>
+                                    <span style="font-size: 0.75rem; color: var(--text-muted);">SYS-04 • Ayer</span>
+                                </div>
+                            </div>
+                            <span class="status-pill pill-success">Resuelta</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="maint-card">
+                    <h3>Próximo mantenimiento</h3>
+                    <div class="maint-ring-box">
+                        <div class="maint-ring">
+                            <div class="maint-ring-inner">1,580</div>
+                        </div>
+                        <div>
+                            <span style="font-size: 0.7rem; color: var(--accent-lime); font-weight: 800; display:block;">KM RESTANTES</span>
+                            <strong style="font-size: 0.95rem;">Cambio de aceite + filtro</strong>
+                        </div>
+                    </div>
+                    <ul class="maint-list">
+                        <li>12 Jun 2026 - Revisión de frenos</li>
+                        <li>04 Mar 2026 - Cambio de neumáticos</li>
+                        <li>18 Dic 2025 - Servicio general</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MOBILE PROMO SECTION -->
+    <section class="mobile-section" id="app">
+        <div class="phone-mockup">
+            <div class="phone-screen">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <strong style="font-size: 0.85rem;">MOTOSTAR</strong>
+                    <i class="fa-solid fa-user-circle"></i>
+                </div>
+                <div style="background-color: var(--bg-dark); padding: 0.75rem; border-radius: 12px; text-align: center; margin-bottom: 1rem;">
+                    <span style="font-size: 0.65rem; color: #94a3b8; display: block;">ESTADO GENERAL</span>
+                    <strong style="font-size: 1.1rem; color: var(--accent-lime);">Todo en orden 92%</strong>
+                </div>
+                <span style="font-size: 0.7rem; color: #94a3b8;">Actividad reciente</span>
+                <div style="font-size: 0.75rem; margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                    <div style="display:flex; justify-content:space-between;"><span>✓ Diagnóstico completado</span><small style="color:#64748b;">Ahora</small></div>
+                    <div style="display:flex; justify-content:space-between;"><span>✓ Ruta registrada</span><small style="color:#64748b;">Ayer</small></div>
+                    <div style="display:flex; justify-content:space-between;"><span>✓ Mantenimiento añadido</span><small style="color:#64748b;">Ayer</small></div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <span class="subtitle">MOTOSTAR EN TU BOLSILLO</span>
+            <h2 class="section-title" style="margin-bottom: 1rem;">La tranquilidad viaja contigo.</h2>
+            <p style="color: #475569; line-height: 1.6; margin-bottom: 1.5rem;">
+                Recibe alertas al instante, consulta el historial y comparte diagnósticos técnicos detallados con tu taller desde la aplicación.
+            </p>
+            <ul style="list-style: none; margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; font-weight: 600;">
+                <li><i class="fa-solid fa-circle-check" style="color: #84cc16;"></i> Notificaciones críticas en tiempo real</li>
+                <li><i class="fa-solid fa-circle-check" style="color: #84cc16;"></i> Historial sincronizado entre web y móvil</li>
+                <li><i class="fa-solid fa-circle-check" style="color: #84cc16;"></i> Reportes listos para compartir con tu mecánico</li>
+            </ul>
+            <div class="store-buttons">
+                <button class="btn-store" onclick="openModal('Descargar App', 'Redirigiendo a la App Store...')"><i class="fa-brands fa-apple"></i> App Store</button>
+                <button class="btn-store" onclick="openModal('Descargar App', 'Redirigiendo a Google Play Store...')"><i class="fa-brands fa-google-play"></i> Google Play</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER CTA -->
+    <div class="footer-cta">
+        <div>
+            <h2 style="font-size: 1.75rem;">Conoce tu moto. Anticipate al problema.</h2>
+            <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 0.25rem;">Conecta tu primera motocicleta y obtén un diagnóstico inicial gratuito.</p>
+        </div>
+        <button class="btn-primary" onclick="openModal('Crear Cuenta', 'Formulario de registro de usuario nuevo.')">CREAR CUENTA GRATIS</button>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="logo" style="font-size: 1.1rem;">
+            <i class="fa-solid fa-motorcycle"></i> MOTOSTAR
+        </div>
+        <div>
+            © 2026 Motostar • Privacidad • Términos • Ayuda
         </div>
     </footer>
 
-    <!-- INTERACTIVE SYSTEM MODAL (Login / Register) -->
-    <div id="system-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden transition-opacity duration-300 opacity-0">
-        <div class="bg-[#111822] border border-slate-800 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl relative">
-            <button onclick="closeSystemModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                </svg>
-            </button>
-
-            <div class="text-center mb-6">
-                <div class="w-12 h-12 rounded-xl bg-brand-lime text-slate-950 flex items-center justify-center font-black mx-auto mb-3">
-                    ✕
-                </div>
-                <h3 id="modal-title" class="text-xl font-black text-white tracking-tight">Acceder al Sistema Motostar</h3>
-                <p id="modal-subtitle" class="text-xs text-slate-400 mt-1">Introduce tus credenciales para sincronizar la telemetría</p>
-            </div>
-
-            <form onsubmit="handleModalSubmit(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-300 mb-1">Correo Electrónico / ID Piloto</label>
-                    <input type="email" required placeholder="piloto@motostar.com" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-brand-lime">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-300 mb-1">Contraseña</label>
-                    <input type="password" required placeholder="••••••••" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-brand-lime">
-                </div>
-
-                <button type="submit" class="w-full bg-brand-lime hover:bg-brand-limeHover text-slate-950 font-black py-3.5 rounded-xl text-xs uppercase tracking-wider transition-all neon-glow">
-                    INICIAR SESIÓN
-                </button>
-            </form>
+    <!-- MODAL INFORMATIVO -->
+    <div class="modal" id="infoModal">
+        <div class="modal-content">
+            <h3 id="modalTitle" style="margin-bottom: 0.5rem;">Título</h3>
+            <p id="modalBody" style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Cuerpo del mensaje...</p>
+            <button class="btn-primary" style="width: 100%; justify-content: center;" onclick="closeModal()">Entendido</button>
         </div>
     </div>
 
-    <!-- JAVASCRIPT MECHANICS & LIVE SIMULATION LOGIC -->
+    <!-- JAVASCRIPT LOGIC -->
     <script>
-        let demoModeActive = true;
-        let animationFrameId = null;
-        let batteryVoltage = 12.8;
-        let engineTemp = 87;
-        let alertFilterActive = false;
-
-        // Mobile Nav Toggle
-        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
-        mobileMenuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
-
+        // --- ANIMACIÓN CANVAS DE TELEMETRÍA ---
         const canvas = document.getElementById('telemetryCanvas');
         const ctx = canvas.getContext('2d');
         let step = 0;
 
         function resizeCanvas() {
-            if (canvas.offsetParent !== null) {
-                canvas.width = canvas.parentElement.clientWidth - 24;
-                canvas.height = 96;
-            }
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = 100;
         }
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
-        function drawWaveform() {
+        function drawTelemetry() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Draw grid lines
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+
+            // Dibujar rejilla de fondo
+            ctx.strokeStyle = '#1e293b';
             ctx.lineWidth = 1;
-            const gridSize = 20;
-            for (let x = 0; x < canvas.width; x += gridSize) {
+            for (let x = 0; x < canvas.width; x += 20) {
                 ctx.beginPath();
                 ctx.moveTo(x, 0);
                 ctx.lineTo(x, canvas.height);
                 ctx.stroke();
             }
-            for (let y = 0; y < canvas.height; y += gridSize) {
-                ctx.beginPath();
-                ctx.moveTo(0, y);
-                ctx.lineTo(canvas.width, y);
-                ctx.stroke();
-            }
 
-            // Draw primary cyan waveform
+            // Dibujar onda 1 (Verde Neón - Motor)
             ctx.beginPath();
-            ctx.strokeStyle = '#38bdf8';
+            ctx.strokeStyle = '#a3e635';
             ctx.lineWidth = 2;
             for (let x = 0; x < canvas.width; x++) {
-                const y = canvas.height / 2 + Math.sin((x + step) * 0.04) * 15 + Math.cos((x - step * 1.5) * 0.02) * 10;
+                const y = canvas.height / 2 + Math.sin((x + step) * 0.03) * 15 + Math.cos((x + step) * 0.01) * 8;
                 if (x === 0) ctx.moveTo(x, y);
                 else ctx.lineTo(x, y);
             }
             ctx.stroke();
 
-            // Draw active neon lime signal pulse
+            // Dibujar onda 2 (Azul - Aceite/Inyección)
             ctx.beginPath();
-            ctx.strokeStyle = '#ccff00';
-            ctx.lineWidth = 2.5;
+            ctx.strokeStyle = '#38bdf8';
+            ctx.lineWidth = 1.5;
             for (let x = 0; x < canvas.width; x++) {
-                const spike = (x > (canvas.width * 0.5) && x < (canvas.width * 0.7)) ? Math.sin((x + step * 2) * 0.2) * 30 : 0;
-                const y = canvas.height / 2 + Math.sin((x - step) * 0.03) * 12 + spike;
+                const y = canvas.height / 2 + Math.cos((x - step * 1.5) * 0.02) * 20;
                 if (x === 0) ctx.moveTo(x, y);
                 else ctx.lineTo(x, y);
             }
             ctx.stroke();
 
-            step += demoModeActive ? 2.5 : 0.8;
-            animationFrameId = requestAnimationFrame(drawWaveform);
+            step += 2;
+            requestAnimationFrame(drawTelemetry);
         }
+        drawTelemetry();
 
-        function toggleDemoMode() {
-            demoModeActive = !demoModeActive;
-            const btnText = document.getElementById('demo-btn-text');
-            const statusLabel = document.getElementById('waveform-status');
-            
-            if (demoModeActive) {
-                btnText.textContent = 'Ver demo activa';
-                statusLabel.textContent = 'TRANSMITIENDO 60Hz';
-                statusLabel.className = 'text-brand-lime';
-            } else {
-                btnText.textContent = 'Demo Pausada';
-                statusLabel.textContent = 'TELEMETRÍA EN PAUSA';
-                statusLabel.className = 'text-amber-400';
+        // --- SISTEMA DE DIAGNÓSTICO INTELIGENTE Y SOLUCIÓN ---
+        function analizarSintoma() {
+            const modelo = document.getElementById('motoModel').value.trim();
+            const sintoma = document.getElementById('symptomDesc').value.trim().toLowerCase();
+
+            if (!sintoma) {
+                alert('Por favor escribe la descripción de la falla o síntoma de la motocicleta.');
+                return;
             }
+
+            const resBox = document.getElementById('diagResultBox');
+            const resName = document.getElementById('resMotoName');
+            const resUrgencia = document.getElementById('resUrgencia');
+            const resTitle = document.getElementById('resDiagnosticoTitle');
+            const resBody = document.getElementById('resDiagnosticoBody');
+            const resSolucion = document.getElementById('resSolucion');
+
+            resName.innerText = modelo ? modelo : 'Motocicleta Registrada';
+
+            // Algoritmo de detección de fallas por palabras clave
+            if (sintoma.includes('encender') || sintoma.includes('prende') || sintoma.includes('arranc') || sintoma.includes('bateria') || sintoma.includes('frío')) {
+                resUrgencia.innerText = 'Urgencia: Media';
+                resUrgencia.style.color = '#d97706';
+                resUrgencia.style.backgroundColor = '#fef3c7';
+                resTitle.innerText = 'Falla en Sistema de Encendido / Carga o Carburación';
+                resBody.innerText = 'Se detecta dificultad en el inicio del ciclo de combustión. Esto suele estar asociado a baja tensión en la batería, bujía desgastada/sulfatada o desajuste en el aire del carburador/cuerpo de aceleración.';
+                resSolucion.innerText = '1. Verificar voltaje de batería en frío (mínimo 12.4V).\n2. Inspeccionar o reemplazar bujía (calibración de luz a 0.7mm).\n3. Limpieza y ajuste de la aguja del carburador o sensor IAC.';
+            } 
+            else if (sintoma.includes('aceite') || sintoma.includes('humo') || sintoma.includes('presion') || sintoma.includes('fuga')) {
+                resUrgencia.innerText = 'Urgencia: Alta';
+                resUrgencia.style.color = '#dc2626';
+                resUrgencia.style.backgroundColor = '#fee2e2';
+                resTitle.innerText = 'Alerta en Sistema de Lubricación / Cilindro';
+                resBody.innerText = 'Anomalía en la presión o nivel de lubricante en el cárter. Si presenta humo blanco/azul, puede haber desgaste en anillos del pistón o sellos de válvula.';
+                resSolucion.innerText = '1. Detener el motor si el testigo de aceite está encendido.\n2. Verifique la mirilla del cárter y complete con viscosidad adecuada (ej. 20W-50 / 10W-40 según manual).\n3. Inspeccionar el filtro de aceite y empaques por fugas.';
+            }
+            else if (sintoma.includes('freno') || sintoma.includes('chilla') || sintoma.includes('disco') || sintoma.includes('pastilla')) {
+                resUrgencia.innerText = 'Urgencia: Alta';
+                resUrgencia.style.color = '#dc2626';
+                resUrgencia.style.backgroundColor = '#fee2e2';
+                resTitle.innerText = 'Sistema de Frenado Requerirá Mantenimiento';
+                resBody.innerText = 'Fricción irregular o degradación del fluido hidráulico. Cristalización de pastillas o desgaste cerca del límite de seguridad.';
+                resSolucion.innerText = '1. Revisar grosor de pastillas (mínimo 2mm de pasta restante).\n2. Limpiar el disco con limpiafrenos para eliminar residuos de grasa.\n3. Purgar el líquido de frenos DOT4 si la maneta se siente esponjosa.';
+            }
+            else if (sintoma.includes('tiembla') || sintoma.includes('cadena') || sintoma.includes('ruido') || sintoma.includes('aceler')) {
+                resUrgencia.innerText = 'Urgencia: Media';
+                resUrgencia.style.color = '#d97706';
+                resUrgencia.style.backgroundColor = '#fef3c7';
+                resTitle.innerText = 'Holgura en Kit de Arrastre o Desajuste Mecánico';
+                resBody.innerText = 'Vibraciones anómalas o tirones en la aceleración originados por destensión en la cadena, piñón gastado o desbalance en los rodamientos.';
+                resSolucion.innerText = '1. Tensionar la cadena dejando una holgura de 20-30 mm.\n2. Limpiar y lubricar con grasa/spray especializado para cadena.\n3. Inspeccionar dientes del catalina y piñón de ataque.';
+            }
+            else {
+                resUrgencia.innerText = 'Urgencia: Evaluativa';
+                resUrgencia.style.color = '#2563eb';
+                resUrgencia.style.backgroundColor = '#dbeafe';
+                resTitle.innerText = 'Análisis de Telemetría Registrado';
+                resBody.innerText = 'Los síntomas descritos requieren una revisión física complementaria o escaneo mediante puerto OBD2 para corroborar sensores del motor.';
+                resSolucion.innerText = '1. Realizar un escaneo de códigos de falla DTC en taller.\n2. Inspeccionar niveles generales de fluidos y conexiones eléctricas.';
+            }
+
+            // Actualizar vista
+            resBox.style.display = 'block';
+            if (modelo) {
+                document.getElementById('dashMotoTitle').innerText = modelo;
+            }
+            resBox.scrollIntoView({ behavior: 'smooth' });
         }
 
-        // Live Sensor Simulation Interval
-        setInterval(() => {
-            if (!demoModeActive) return;
+        // --- FILTRAR HISTORIAL DE ALERTAS ---
+        let currentFilter = 'ALL';
+        function toggleFiltroAlertas() {
+            const container = document.getElementById('alertsContainer');
+            const btn = document.getElementById('btnFilter');
+            const items = container.getElementsByClassName('alert-item');
 
-            // Random fluctuations
-            batteryVoltage = (12.6 + Math.random() * 0.4).toFixed(1);
-            engineTemp = Math.floor(86 + Math.random() * 4);
-
-            document.getElementById('stat-battery').textContent = `${batteryVoltage} V`;
-            document.getElementById('stat-engine').textContent = `${engineTemp} °C`;
-        }, 2000);
-
-        function triggerDiagnosticSimulation() {
-            const healthRing = document.getElementById('health-ring');
-            const healthPercentage = document.getElementById('health-percentage');
-            
-            // Temporary scan state
-            healthPercentage.textContent = '...';
-            healthRing.style.strokeDashoffset = '263.89'; // reset
-
-            setTimeout(() => {
-                const randomHealth = Math.floor(88 + Math.random() * 10);
-                healthPercentage.textContent = `${randomHealth}%`;
-                // Calculate dash offset (263.89 total circumference)
-                const offset = 263.89 * (1 - randomHealth / 100);
-                healthRing.style.strokeDashoffset = offset;
-                
-                // Trigger toast notification
-                triggerAppToast(`Diagnóstico completado con éxito (${randomHealth}% Salud)`);
-            }, 800);
-        }
-
-        function toggleAlertFilter() {
-            alertFilterActive = !alertFilterActive;
-            const container = document.getElementById('alert-history-container');
-            const filterLabel = document.getElementById('alert-filter-label');
-
-            if (alertFilterActive) {
-                filterLabel.textContent = 'SOLO CRÍTICAS';
-                const items = container.querySelectorAll('.alert-item');
-                items.forEach(item => {
-                    if (!item.innerText.includes('Crítica')) {
+            if (currentFilter === 'ALL') {
+                currentFilter = 'CRITICAL';
+                btn.innerText = 'SÓLO CRÍTICAS';
+                for (let item of items) {
+                    if (item.getAttribute('data-type') !== 'critical') {
                         item.style.display = 'none';
+                    } else {
+                        item.style.display = 'flex';
                     }
-                });
+                }
             } else {
-                filterLabel.textContent = 'TODAS';
-                const items = container.querySelectorAll('.alert-item');
-                items.forEach(item => {
+                currentFilter = 'ALL';
+                btn.innerText = 'TODAS';
+                for (let item of items) {
                     item.style.display = 'flex';
-                });
+                }
             }
         }
 
-        function addDiagnosticSampleAlert() {
-            const container = document.getElementById('alert-history-container');
-            const now = new Date();
-            const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
-            
-            const alertsPool = [
-                { title: 'Presión de neumáticos baja', code: 'TPMS-02', badge: 'Atención', bg: 'bg-amber-100/80', text: 'text-amber-700', dot: 'bg-amber-500' },
-                { title: 'Inyección de combustible nominal', code: 'SYS-09', badge: 'Resuelta', bg: 'bg-emerald-100/80', text: 'text-emerald-700', dot: 'bg-emerald-500' },
-                { title: 'Sensor de inclinación activado', code: 'P0122', badge: 'Crítica', bg: 'bg-red-100/80', text: 'text-red-600', dot: 'bg-red-500' }
-            ];
-
-            const alertData = alertsPool[Math.floor(Math.random() * alertsPool.length)];
-
-            const newAlertHtml = `
-                <div class="alert-item p-3.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between transition-all opacity-0 transform -translate-y-2">
-                    <div class="flex items-center space-x-3">
-                        <span class="w-2 h-2 rounded-full ${alertData.dot} shrink-0"></span>
-                        <span class="text-xs font-bold text-slate-400 w-12">${timeStr}</span>
-                        <div>
-                            <p class="text-xs font-bold text-slate-900">${alertData.title}</p>
-                            <p class="text-[11px] text-slate-400 font-mono">${alertData.code}</p>
-                        </div>
-                    </div>
-                    <span class="text-[11px] font-bold ${alertData.text} ${alertData.bg} px-2.5 py-1 rounded-full">${alertData.badge}</span>
-                </div>
-            `;
-
-            container.insertAdjacentHTML('afterbegin', newAlertHtml);
-
-            // Animate transition
-            setTimeout(() => {
-                const firstChild = container.firstElementChild;
-                firstChild.classList.remove('opacity-0', '-translate-y-2');
-            }, 50);
+        // --- MODAL AUXILIAR ---
+        function openModal(title, message) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalBody').innerText = message;
+            document.getElementById('infoModal').style.display = 'flex';
         }
 
-        function openSystemModal(type) {
-            const modal = document.getElementById('system-modal');
-            const title = document.getElementById('modal-title');
-            const subtitle = document.getElementById('modal-subtitle');
-
-            if (type === 'register') {
-                title.textContent = 'Crear Cuenta Gratis en Motostar';
-                subtitle.textContent = 'Vincula tu primera motocicleta y recibe telemetría instantánea';
-            } else {
-                title.textContent = 'Acceder al Sistema Motostar';
-                subtitle.textContent = 'Introduce tus credenciales para sincronizar la telemetría';
-            }
-
-            modal.classList.remove('hidden');
-            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        function closeModal() {
+            document.getElementById('infoModal').style.display = 'none';
         }
-
-        function closeSystemModal() {
-            const modal = document.getElementById('system-modal');
-            modal.classList.add('opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 300);
-        }
-
-        function handleModalSubmit(e) {
-            e.preventDefault();
-            closeSystemModal();
-            triggerAppToast('¡Sesión iniciada! Sincronizando datos OBD-II...');
-        }
-
-        function triggerAppToast(message) {
-            const toast = document.createElement('div');
-            toast.className = 'fixed bottom-5 right-5 bg-slate-950 border border-brand-lime text-white font-semibold text-xs px-5 py-3 rounded-2xl shadow-2xl z-50 flex items-center space-x-3 transition-all duration-300 transform translate-y-10 opacity-0';
-            toast.innerHTML = `
-                <span class="w-2 h-2 rounded-full bg-brand-lime"></span>
-                <span>${message}</span>
-            `;
-            document.body.appendChild(toast);
-             setTimeout(() => {
-                toast.classList.remove('translate-y-10', 'opacity-0');
-            }, 50);
-
-            setTimeout(() => {
-                toast.classList.add('translate-y-10', 'opacity-0');
-                setTimeout(() => toast.remove(), 300);
-            }, 3500);
-        }
-
-        // Initialize Canvas loop on window load
-        window.onload = function() {
-            resizeCanvas();
-            drawWaveform();
-        };
     </script>
 </body>
 </html>
